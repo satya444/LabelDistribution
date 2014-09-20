@@ -24,7 +24,7 @@ public class ReadConfiguration {
 	 * @param inputFile
 	 *            : path to input configuration file
 	 */
-	public void readBasicConfiguration(String inputFile) {
+	public static void readBasicConfiguration(String inputFile) {
 		File f = new File(inputFile);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(f));
@@ -57,7 +57,8 @@ public class ReadConfiguration {
 	 * @param inpuFile : pass entire filepath as argument
 	 * @param myNodeId : pass current Nodeid as input argument
 	 */
-	public void readInputConfiguration(String inputFile,int myNodeId){
+	public static void readInputConfiguration(String inputFile){
+		int myNodeId= AosMain.myNodeId;
 	//	AosMain.setMyNodeId(myNodeId);
 		File f = new File(inputFile);
 		try {
