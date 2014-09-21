@@ -3,11 +3,17 @@
  */
 package com.utd.ld.networkprotocol;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+
+import com.sun.nio.sctp.MessageInfo;
 import com.sun.nio.sctp.SctpChannel;
 import com.sun.nio.sctp.SctpServerChannel;
 import com.utd.ld.main.AosMain;
+import com.utd.ld.utils.Message;
 import com.utd.ld.utils.NodeDetails;
 
 /**
@@ -16,13 +22,15 @@ import com.utd.ld.utils.NodeDetails;
  */
 public class ConnectionManager {
 
+	
 	/**
 	 * Function connectHigherNodes This function connects the following process
 	 * to all the processes with a lower PID
 	 */
-	private static int myId= AosMain.myNodeId;
+	private static int myId = AosMain.myNodeId;
+
 	public static boolean connectHigherNodes(SctpServerChannel serverChannel) {
-		int totalNodes= AosMain.mapNodes.size();
+		int totalNodes = AosMain.mapNodes.size();
 		int i = myId + 1;
 		while (i <= totalNodes) {
 			SctpChannel sctpChannel;
@@ -51,8 +59,9 @@ public class ConnectionManager {
 
 			try {
 				SctpChannel sctpChannel;
-				InetSocketAddress Sa = new InetSocketAddress(AosMain.mapNodes.get(i)
-						.getAddress(), AosMain.mapNodes.get(i).getPortNumber());
+				InetSocketAddress Sa = new InetSocketAddress(AosMain.mapNodes
+						.get(i).getAddress(), AosMain.mapNodes.get(i)
+						.getPortNumber());
 				sctpChannel = SctpChannel.open();
 				sctpChannel.connect(Sa);
 				AosMain.connectionSocket.put(i, sctpChannel);
@@ -82,9 +91,9 @@ public class ConnectionManager {
 	 * @param mapNodes
 	 * @return
 	 */
-	public static boolean createConnections(){
+	public static boolean createConnections() {
 
-		NodeDetails currentNode= AosMain.mapNodes.get(myId);
+		NodeDetails currentNode = AosMain.mapNodes.get(myId);
 		SctpServerChannel serverChannel = null;
 
 		try {
@@ -108,6 +117,71 @@ public class ConnectionManager {
 			return false;
 		System.out.println(myId + "is connected to all");
 		return true;
+	}
+
+	/**
+	 * 
+	 * @param msgToSend
+	 */
+	public static void sendMessage(Message m, int destId) {
+		// get the connection object from already stored connections in the map
+		SctpChannel clientSocket = AosMain.connectionSocket.get(destId);
+		if (clientSocket == null) {
+			System.out
+					.println("Connection Manager can't get the SCTP Channel object for Recipeint Node Id "
+							+ destId + " in theconnection Map.");
+			return;
+		}
+
+		try {
+
+			sendMessageSCTP(clientSocket, m);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Function sendMessageSCTP Actual SCTP send
+	 */
+
+	private static void sendMessageSCTP(SctpChannel clientSock, Message m)
+			throws IOException {
+
+		ByteBuffer Buffer = ByteBuffer.allocate(10000);
+		Buffer.clear();
+		byte[] serialized = null;
+		serialized = serialize(m);
+
+		// Reset a pointer to point to the start of buffer
+		Buffer.put(serialized);
+		Buffer.flip();
+
+		try {
+			// Send a message in the channel
+			MessageInfo messageInfo = MessageInfo.createOutgoing(null, 0);
+			clientSock.send(Buffer, messageInfo);
+			System.out.println("SENDING THIS MESSAGE");
+			String msgPrint = "*********************************************";
+			msgPrint += m.getLabel() + msgPrint;
+			System.out.println(msgPrint);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static byte[] serialize(Object obj) throws IOException {
+		ObjectOutputStream out;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		out = new ObjectOutputStream(bos);
+		out.writeObject(obj);
+		return bos.toByteArray();
 	}
 
 }

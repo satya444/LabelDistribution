@@ -71,11 +71,19 @@ public class ReadConfiguration {
 				String[] lineSplit = line.split(" ");
 				Integer nId= Integer.parseInt(lineSplit[0]);
 				if(nId==myNodeId){
+					AosMain.meAsDestination++;
 					List<Integer> destinationList= new LinkedList<>();
-					for(int i=1; i<lineSplit.length; i++){
+					for(int i=0; i<lineSplit.length; i++){
 						destinationList.add(Integer.parseInt(lineSplit[i]));
 					}
 					AosMain.sendQueue.add(destinationList);
+				}
+				else{
+					for(int i=1; i<lineSplit.length;i++){
+						if(Integer.parseInt(lineSplit[i])==myNodeId){
+							AosMain.meAsDestination++;
+						}
+					}
 				}
 			}
 			br.close();
