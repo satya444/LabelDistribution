@@ -15,8 +15,8 @@ public class Receiver {
 		ByteBuffer byteBuffer = ByteBuffer.allocate(10000);
 		try {
 			while (true) {
-				System.out.println("SEND FLAG "+ AosMain.sendExitFlag);
-				System.out.println("RECEIVE FLAG "+AosMain.receiveExitFlag);
+			//	System.out.println("SEND FLAG "+ AosMain.sendExitFlag);
+			//	System.out.println("RECEIVE FLAG "+AosMain.receiveExitFlag);
 				if(AosMain.sendExitFlag&&AosMain.receiveExitFlag){
 					System.out.println("**************EXITING RECEIVER***********");
 					return;

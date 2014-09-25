@@ -15,6 +15,20 @@ public class Message implements Serializable{
 		this.destId = destId;
 	}
 	int label;
+	int prevPos;
+	public int getPrevPos() {
+		return prevPos;
+	}
+	public void setPrevPos(int prevPos) {
+		this.prevPos = prevPos;
+	}
+	int totLen;
+	public int getTotLen() {
+		return totLen;
+	}
+	public void setTotLen(int totLen) {
+		this.totLen = totLen;
+	}
 	public void setLabel(int label) {
 		this.label = label;
 	}
