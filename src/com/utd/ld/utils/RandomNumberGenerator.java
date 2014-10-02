@@ -10,7 +10,7 @@ public class RandomNumberGenerator {
 	private static int size= AosMain.mapNodes.size();
 	public static int generateRandomNumber(){
 		Random r= new Random();
-		int randomNum= r.nextInt(2*size-myId)+myId;
+		int randomNum= r.nextInt(2*(size-myId))+myId;
 		return randomNum;
 	}
 }
