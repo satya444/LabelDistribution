@@ -1,6 +1,5 @@
 package com.utd.ld.sendreceive;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.utd.ld.main.AosMain;
@@ -9,7 +8,6 @@ import com.utd.ld.utils.Message;
 
 public class Sender implements Runnable {
 
-	private int myId = AosMain.myNodeId;
 
 	public static void invokeAllSends() {
 		Sender s = new Sender();
@@ -72,17 +70,17 @@ public class Sender implements Runnable {
 
 	public void processReceiveQueue() {
 		try {
-			System.out.println("TRYING TO PROCESS RECEIVE QUEUE");
-			System.out.println("MY LABEL IS " + AosMain.myRandomLabel);
+			//System.out.println("TRYING TO PROCESS RECEIVE QUEUE");
+			//System.out.println("MY LABEL IS " + AosMain.myRandomLabel);
 			while (AosMain.meAsDestination > 0) {
 				Message m;
 				m = AosMain.receiveQueue.take();
 
 				List<Integer> destIds = m.getDestId();
 				AosMain.meAsDestination--;
-				System.out.println("PREV POS IS " + m.getPrevPos());
-				System.out.println("TOTLEN is " + m.getTotLen());
-				System.out.println("ME AS DEST " + AosMain.meAsDestination);
+				//System.out.println("PREV POS IS " + m.getPrevPos());
+				//System.out.println("TOTLEN is " + m.getTotLen());
+				//System.out.println("ME AS DEST " + AosMain.meAsDestination);
 				if (m.getPrevPos() == m.getTotLen() - 1) {
 					System.out.println("GOT BACK MY MESSAGE");
 					System.out.println("**********LABEL SUM IS " + m.getLabel()
@@ -90,7 +88,7 @@ public class Sender implements Runnable {
 					System.out.println("************PATH IS "
 							+ destIds.toString() + " ***************");
 				} else {
-					System.out.println("IN ELSE**");
+					//System.out.println("IN ELSE**");
 					m.setLabel(m.getLabel()+AosMain.myRandomLabel);
 					m.setPrevPos(m.getPrevPos()+1);
 					int destId = 0;
@@ -111,9 +109,9 @@ public class Sender implements Runnable {
 					else {
 						sendToLocal(m);
 					}
-					System.out.println("RETURNED BACK ");
-					System.out.println("ME AS DEST LEFT"
-							+ AosMain.meAsDestination);
+					//System.out.println("RETURNED BACK ");
+					//System.out.println("ME AS DEST LEFT"
+					//		+ AosMain.meAsDestination);
 				}
 
 			}
